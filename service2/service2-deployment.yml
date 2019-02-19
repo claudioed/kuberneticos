@@ -1,0 +1,66 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    fabric8.io/git-commit: 2672352e26c3affa76ce0a7120eb1fd1e5e0317a
+    fabric8.io/iconUrl: img/icons/spring-boot.svg
+    fabric8.io/git-branch: v2
+    fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=service2&var-version=v2
+    fabric8.io/scm-tag: HEAD
+    fabric8.io/scm-url: https://github.com/spring-projects/spring-boot/spring-boot-starter-parent/microservices-latency-analysis/service2
+  labels:
+    version: v2
+    expose: "false"
+    app: service2
+    provider: fabric8
+    group: br.com.kurtis.labs
+  name: service2
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: service2
+      provider: fabric8
+      group: br.com.kurtis.labs
+  template:
+    metadata:
+      annotations:
+        fabric8.io/git-commit: 2672352e26c3affa76ce0a7120eb1fd1e5e0317a
+        fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=service2&var-version=v2
+        fabric8.io/scm-url: https://github.com/spring-projects/spring-boot/spring-boot-starter-parent/microservices-latency-analysis/service2
+        fabric8.io/iconUrl: img/icons/spring-boot.svg
+        fabric8.io/git-branch: v2
+        fabric8.io/scm-tag: HEAD
+      labels:
+        app: service2
+        provider: fabric8
+        version: v2
+        group: br.com.kurtis.labs
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: JAEGER_SERVICE_NAME
+          value: service2
+        - name: SERVICE1_ADDRESS
+          value: http://service1:8080
+        - name: SERVICE2_ADDRESS
+          value: http://service2:8080
+        - name: SERVICE3_ADDRESS
+          value: http://service3:8080
+        - name: SERVICE4_ADDRESS
+          value: http://service4:8080
+        image: claudioed/service2
+        imagePullPolicy: IfNotPresent
+        name: service2-v2
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        securityContext:
+          privileged: false
